@@ -14,9 +14,64 @@ spec:
     spec:
       containers:
         - name: wizeresumeodata 
-          image: brandonkorouscontainers.azurecr.io/wizeresumeodata 
+          resume: brandonkorouscontainers.azurecr.io/wizeresumeodata 
           ports:
           - containerPort: 80
           env:
           - name: "ASPNETCORE_ENVIRONMENT"
             value: "Development"
+          - name: "Auth0_Authority"
+            valueFrom:
+              secretKeyRef: 
+                name: auth0-resume-secrets
+                key: Auth0_Authority
+          - name: "Auth0_ClientId"
+            valueFrom:
+              secretKeyRef: 
+                name: auth0-resume-secrets
+                key: Auth0_ClientId
+          - name: "Auth0_ClientSecret"
+            valueFrom:
+              secretKeyRef: 
+                name: auth0-resume-secrets
+                key: Auth0_ClientSecret
+          - name: "Auth0_Audience"
+            valueFrom:
+              secretKeyRef: 
+                name: auth0-resume-secrets
+                key: Auth0_Audience
+          - name: "JwtAuthentication_ValidAudience"
+            valueFrom:
+              secretKeyRef: 
+                name: authentication-resume-secrets
+                key: JwtAuthentication_ValidAudience
+          - name: "JwtAuthentication_ValidIssuer"
+            valueFrom:
+              secretKeyRef: 
+                name: authentication-resume-secrets
+                key: JwtAuthentication_ValidIssuer
+          - name: "ConnectionStrings_WizeWorksContext"
+            valueFrom:
+              secretKeyRef: 
+                name: connectionstrings-resume-secrets
+                key: ConnectionStrings_WizeWorksContext
+          - name: "ConnectionStrings_TenantsContext"
+            valueFrom:
+              secretKeyRef: 
+                name: connectionstrings-resume-secrets
+                key: ConnectionStrings_TenantsContext
+          - name: "ConnectionStrings_AzureBlobStorage"
+            valueFrom:
+              secretKeyRef: 
+                name: connectionstrings-resume-secrets
+                key: ConnectionStrings_AzureBlobStorage
+          - name: "ConnectionStrings_Sentry"
+            valueFrom:
+              secretKeyRef: 
+                name: connectionstrings-resume-secrets
+                key: ConnectionStrings_Sentry
+          - name: "ApplicationInsights_ConnectionString"
+            valueFrom:
+              secretKeyRef: 
+                name: appinsights-resume-secrets
+                key: ApplicationInsights_ConnectionString

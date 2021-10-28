@@ -58,6 +58,42 @@ stages:
         deploy:
           steps:
           - task: KubernetesManifest@0
+            displayName: Create secret
+            inputs: 
+              action: createSecret
+              secretType: generic
+              secretName: appinsights-resume-secrets
+              secretArguments: --from-literal=ApplicationInsights_ConnectionString="$(ApplicationInsights:ConnectionString)"
+              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              namespace: development
+          - task: KubernetesManifest@0
+            displayName: Create secret
+            inputs: 
+              action: createSecret
+              secretType: generic
+              secretName: connectionstrings-resume-secrets
+              secretArguments: --from-literal=ConnectionStrings_AzureBlobStorage="$(ConnectionStrings:AzureBlobStorage)" --from-literal=ConnectionStrings_TenantsContext="$(ConnectionStrings:TenantsContext)" --from-literal=ConnectionStrings_WizeWorksContext="$(ConnectionStrings:WizeWorksContext)" --from-literal=ConnectionStrings_Sentry="$(ConnectionStrings:Sentry)"
+              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              namespace: development
+          - task: KubernetesManifest@0
+            displayName: Create secret
+            inputs: 
+              action: createSecret
+              secretType: generic
+              secretName: authentication-resume-secrets
+              secretArguments: --from-literal=JwtAuthentication_ValidAudience="$(JwtAuthentication:ValidAudience)" --from-literal=JwtAuthentication_ValidIssuer="$(JwtAuthentication:ValidIssuer)"
+              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              namespace: development
+          - task: KubernetesManifest@0
+            displayName: Create secret
+            inputs: 
+              action: createSecret
+              secretType: generic
+              secretName: auth0-resume-secrets
+              secretArguments: --from-literal=Auth0_Authority="$(Auth0:Authority)" --from-literal=Auth0_ClientSecret="$(Auth0:ClientSecret)" --from-literal=Auth0_ClientId="$(Auth0:ClientId)" --from-literal=Auth0_Audience="$(Auth0:Audience)"
+              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              namespace: development
+          - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
               action: 'createSecret'
