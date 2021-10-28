@@ -1,0 +1,22 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: wizeresumeodata-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: wizeresumeodata
+  template:
+    metadata:
+      labels:
+        app: wizeresumeodata 
+    spec:
+      containers:
+        - name: wizeresumeodata 
+          image: brandonkorouscontainers.azurecr.io/wizeresumeodata 
+          ports:
+          - containerPort: 80
+          env:
+          - name: "ASPNETCORE_ENVIRONMENT"
+            value: "Development"

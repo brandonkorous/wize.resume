@@ -1,0 +1,80 @@
+# Deploy to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '93030bb1-ee92-44e8-b94d-74b682629e09'
+  imageRepository: 'wizeresumeodata'
+  containerRegistry: 'brandonkorouscontainers.azurecr.io'
+  dockerfilePath: '**/wize.resume.odata/Dockerfile'
+  tag: '$(Build.BuildId)'
+  imagePullSecret: 'brandonkorouscontainers-auth'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        buildContext: .
+        tags: |
+          $(tag)
+          
+    - upload: eng
+      artifact: eng
+
+- stage: DeployDevelopment
+  displayName: Deploy Development
+  dependsOn: Build
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'services-primary.development'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: KubernetesManifest@0
+            displayName: Create imagePullSecret
+            inputs:
+              action: 'createSecret'
+              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              namespace: 'development'
+              secretType: 'dockerRegistry'
+              secretName: '$(imagePullSecret)'
+              dockerRegistryEndpoint: '$(dockerRegistryServiceConnection)'
+              
+          - task: KubernetesManifest@0
+            displayName: Deploy to Kubernetes cluster
+            inputs:
+              action: 'deploy'
+              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              namespace: 'development'
+              manifests: |
+                $(Pipeline.Workspace)/eng/development/deployment.odata.yml
+                $(Pipeline.Workspace)/eng/development/service.odata.yml
+              containers: '$(containerRegistry)/$(imageRepository):$(tag)'
+              imagePullSecrets: '$(imagePullSecret)'
