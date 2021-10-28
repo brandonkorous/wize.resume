@@ -62,17 +62,8 @@ stages:
             inputs: 
               action: createSecret
               secretType: generic
-              secretName: appinsights-resume-secrets
-              secretArguments: --from-literal=ApplicationInsights_ConnectionString="$(ApplicationInsights:ConnectionString)"
-              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
-              namespace: development
-          - task: KubernetesManifest@0
-            displayName: Create secret
-            inputs: 
-              action: createSecret
-              secretType: generic
               secretName: connectionstrings-resume-secrets
-              secretArguments: --from-literal=ConnectionStrings_AzureBlobStorage="$(ConnectionStrings:AzureBlobStorage)" --from-literal=ConnectionStrings_TenantsContext="$(ConnectionStrings:TenantsContext)" --from-literal=ConnectionStrings_WizeWorksContext="$(ConnectionStrings:WizeWorksContext)" --from-literal=ConnectionStrings_Sentry="$(ConnectionStrings:Sentry)"
+              secretArguments: --from-literal=ConnectionStrings_AzureBlobStorage="$(ConnectionStrings:AzureBlobStorage)" --from-literal=ConnectionStrings_TenantsContext="$(ConnectionStrings:TenantsContext)" --from-literal=ConnectionStrings_WizeWorksContext="$(ConnectionStrings:WizeWorksContext)" --from-literal=ConnectionStrings_ApplicationInsights="$(ConnectionStrings:ApplicationInsights)" --from-literal=ConnectionStrings_Sentry="$(ConnectionStrings:Sentry)"
               kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
               namespace: development
           - task: KubernetesManifest@0

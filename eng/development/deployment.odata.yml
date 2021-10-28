@@ -60,18 +60,13 @@ spec:
               secretKeyRef: 
                 name: connectionstrings-resume-secrets
                 key: ConnectionStrings_TenantsContext
-          - name: "ConnectionStrings_AzureBlobStorage"
+          - name: "ConnectionStrings_ApplicationInsights"
             valueFrom:
               secretKeyRef: 
                 name: connectionstrings-resume-secrets
-                key: ConnectionStrings_AzureBlobStorage
+                key: ConnectionStrings_ApplicationInsights
           - name: "ConnectionStrings_Sentry"
             valueFrom:
               secretKeyRef: 
                 name: connectionstrings-resume-secrets
                 key: ConnectionStrings_Sentry
-          - name: "ApplicationInsights_ConnectionString"
-            valueFrom:
-              secretKeyRef: 
-                name: appinsights-resume-secrets
-                key: ApplicationInsights_ConnectionString
