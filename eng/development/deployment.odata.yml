@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: wizeresumeodata 
-          resume: brandonkorouscontainers.azurecr.io/wizeresumeodata 
+          image: brandonkorouscontainers.azurecr.io/wizeresumeodata 
           ports:
           - containerPort: 80
           env:
