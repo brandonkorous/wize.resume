@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using wize.common.tenancy.Interfaces;
+using wize.resume.data.V1.Enums;
 
 namespace wize.resume.data.V1.Models
 {
@@ -17,8 +18,11 @@ namespace wize.resume.data.V1.Models
         [Required]
         [MinLength(3)]
         public string SafeName { get; set; }
+        public ResumeTemplate Template { get; set; }
         [RegularExpression("^#?(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})$")]
         public string AccentColor { get; set; }
+        [RegularExpression("^#?(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})$")]
+        public string AccentTextColor { get; set; }
         public string Street1 { get; set; }
         public string Street2 { get; set; }
         public string City { get; set; }

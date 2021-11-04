@@ -70,7 +70,6 @@ namespace wize.resume.odata
             app.UseRouting();
             app.UseSentryTracing();
 
-            app.UseJwt();
             app.UseOpenAPI(provider);
             app.UseODataMvc(builder);
         }
