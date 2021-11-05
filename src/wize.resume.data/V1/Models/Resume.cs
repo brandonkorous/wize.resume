@@ -23,6 +23,7 @@ namespace wize.resume.data.V1.Models
         public string AccentColor { get; set; }
         [RegularExpression("^#?(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})$")]
         public string AccentTextColor { get; set; }
+        public string ImageUrl { get; set; }
         public string Street1 { get; set; }
         public string Street2 { get; set; }
         public string City { get; set; }
