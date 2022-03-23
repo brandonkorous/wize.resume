@@ -36,6 +36,7 @@ namespace wize.resume.odata.V1
         /// This method will return the requested Dataset.
         /// </summary>
         /// <returns>IQueryable of requested type.</returns>
+        [Authorize("list:resume")]
         [ODataRoute]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -60,6 +61,7 @@ namespace wize.resume.odata.V1
         /// </summary>
         /// <param name="id">Key value</param>
         /// <returns>Data model</returns>
+        [Authorize("list:resume")]
         [ODataRoute("({id})")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
