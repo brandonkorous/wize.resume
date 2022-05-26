@@ -9,17 +9,15 @@ resources:
 - repo: self
 
 variables:
-
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '93030bb1-ee92-44e8-b94d-74b682629e09'
-  imageRepository: 'wizeresumeodata'
-  containerRegistry: 'brandonkorouscontainers.azurecr.io'
-  dockerfilePath: '**/wize.resume.odata/Dockerfile'
-  tag: '$(Build.BuildId)'
-  imagePullSecret: 'brandonkorouscontainers-auth'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+- group: services-primary-variables
+- name: imageRepository
+  value: 'wizeresumeodata'
+- name: dockerfilePath
+  value: '**/wize.resume.odata/Dockerfile'
+- name: tag
+  value: '$(Build.BuildId)'
+- name: vmImageName
+  value: 'ubuntu-latest'
 
 stages:
 - stage: Build
@@ -36,7 +34,7 @@ stages:
         command: buildAndPush
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
+        containerRegistry: $(DockerRegistryServiceConnection)
         buildContext: .
         tags: |
           $(tag)
@@ -64,7 +62,7 @@ stages:
               secretType: generic
               secretName: connectionstrings-resume-secrets
               secretArguments: --from-literal=ConnectionStrings_TenantsContext="$(ConnectionStrings:TenantsContext)" --from-literal=ConnectionStrings_WizeWorksContext="$(ConnectionStrings:WizeWorksContext)" --from-literal=ConnectionStrings_ApplicationInsights="$(ConnectionStrings:ApplicationInsights)" --from-literal=ConnectionStrings_Sentry="$(ConnectionStrings:Sentry)"
-              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              kubernetesServiceConnection: $(KubernetesServiceConnection)
               namespace: development
           - task: KubernetesManifest@0
             displayName: Create Authentication Secrets
@@ -73,7 +71,7 @@ stages:
               secretType: generic
               secretName: authentication-resume-secrets
               secretArguments: --from-literal=JwtAuthentication_ValidAudience="$(JwtAuthentication:ValidAudience)" --from-literal=JwtAuthentication_ValidIssuer="$(JwtAuthentication:ValidIssuer)"
-              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              kubernetesServiceConnection: $(KubernetesServiceConnection)
               namespace: development
           - task: KubernetesManifest@0
             displayName: Create Auth0 Secrets
@@ -82,26 +80,26 @@ stages:
               secretType: generic
               secretName: auth0-resume-secrets
               secretArguments: --from-literal=Auth0_Authority="$(Auth0:Authority)" --from-literal=Auth0_Audience="$(Auth0:Audience)" --from-literal=Auth0_ClientSecret="$(Auth0:ClientSecret)" --from-literal=Auth0_ClientId="$(Auth0:ClientId)"
-              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              kubernetesServiceConnection: $(KubernetesServiceConnection)
               namespace: development
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
               action: 'createSecret'
-              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              kubernetesServiceConnection: $(KubernetesServiceConnection)
               namespace: 'development'
               secretType: 'dockerRegistry'
               secretName: '$(imagePullSecret)'
-              dockerRegistryEndpoint: '$(dockerRegistryServiceConnection)'
+              dockerRegistryEndpoint: '$(DockerRegistryServiceConnection)'
               
           - task: KubernetesManifest@0
             displayName: Deploy to Kubernetes cluster
             inputs:
               action: 'deploy'
-              kubernetesServiceConnection: 'svc-con-aks-korous-kube-development'
+              kubernetesServiceConnection: $(KubernetesServiceConnection)
               namespace: 'development'
               manifests: |
                 $(Pipeline.Workspace)/eng/development/deployment.odata.yml
                 $(Pipeline.Workspace)/eng/development/service.odata.yml
-              containers: '$(containerRegistry)/$(imageRepository):$(tag)'
-              imagePullSecrets: '$(imagePullSecret)'
+              containers: '$(ContainerRegistry)/$(imageRepository):$(tag)'
+              imagePullSecrets: '$(ImagePullSecret)'
