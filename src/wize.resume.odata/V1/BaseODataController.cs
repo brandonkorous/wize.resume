@@ -40,7 +40,7 @@ namespace wize.resume.odata.V1
         [ODataRoute]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All)]
+        [EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All, MaxAnyAllExpressionDepth = 2)]
         public virtual ActionResult<IQueryable<TModel>> Get()
         {
             try
