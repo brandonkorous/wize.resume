@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.OData.Routing;
+﻿using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,6 +11,7 @@ using wize.resume.data.V1.Models;
 namespace wize.resume.odata.V1.Controllers
 {
     [ODataRoutePrefix("Resumes")]
+    [EnableQuery(MaxNodeCount = 400)]
     public partial class ResumesController : BaseODataController<Guid, Resume>
     {
         private readonly WizeContext _context;
