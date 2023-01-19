@@ -31,13 +31,12 @@ stages:
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(DockerRegistryServiceConnection)
-        buildContext: .
-        tags: |
-          $(tag)
+        containerRegistry: 'brandonkorouscontainers'
+        repository: '$(imageRepository)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        buildContext: '.'
+        tags: '$(tag)'
           
     - upload: eng
       artifact: eng
