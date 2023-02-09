@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: wizeresumeodata-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
         app: wizeresumeodata
